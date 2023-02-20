@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="600" height="500"></canvas>
+    <script>
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      ctx.font = '36px serif';
+      ctx.strokeStyle = 'red';
+
+      /* 預設 ctx.textBaseline 為 alphabetic ----------------------------------------- */
+      /* 刻意將基線定位多移 10xp */
+      ctx.moveTo(0, 10);
+      ctx.lineTo(600, 10);
+      ctx.stroke();
+      console.log("ctx.textBaseline === 'alphabetic'", ctx.textBaseline === 'alphabetic');
+      ctx.fillText(`AaBbCcDdEeFfGg (預設為 ${ctx.textBaseline})`, 0, 10);
+      /* /預設 ctx.textBaseline 為 alphabetic ----------------------------------------- */
+
+      const baselines = ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'];
+      baselines.forEach(function (baselineType, index) {
+        ctx.textBaseline = baselineType;
+        let y = 75 + index * 75;
+        ctx.beginPath();
+        ctx.moveTo(0, y + 0.5);
+        ctx.lineTo(600, y + 0.5);
+        ctx.stroke();
+        ctx.fillText('AaBbCcDdEeFfGg (' + baselineType + ')', 0, y);
+      });
+    </script>
+  </body>
+</html>

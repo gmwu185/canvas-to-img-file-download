@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML 基本自定樣版</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <style>
+      body {
+        margin: 0;
+      }
+      #html_img,
+      #myCanvas,
+      #base64Img {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 取用開源，沒限 CROS 的圖片資源連結 原連結 https://www.pexels.com/zh-tw/photo/9009959/-->
+    <!-- <img src="https://images.pexels.com/photos/9009959/pexels-photo-9009959.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260" alt=""> -->
+    <!-- access-control-allow-origin: * 權限全開 -->
+
+    <!-- 有限 CROS 的圖片資源連結 -->
+    <!-- <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_light_color_272x92dp.png" alt=""> -->
+    <!-- 完全沒有 access-control-allow-xxx 訊息 完全沒有權限 -->
+
+    <!-- <img src="https://cdn.unwire.hk/wp-content/uploads/2015/06/AppleWebdesignshock.jpg" alt=""> -->
+    <!-- Access-Control-Allow-Credentials: true 只部份權限 -->
+    <div style="display: flex; text-align: center">
+      <div style="width: 33.33%">
+        <img id="html_img" />
+        <h2>img 元素</h2>
+      </div>
+      <div style="width: 33.33%">
+        <canvas id="myCanvas"></canvas>
+        <h2>canvas 繪製圖片</h2>
+      </div>
+      <div style="width: 33.33%">
+        <img id="base64Img" />
+        <h2>canvas .toDataURL() 方法轉出 base64 png 圖檔</h2>
+        <button id="btn_downBase64Img">btn_downloadImg</button>
+      </div>
+    </div>
+
+    <script>
+      let myCanvasEL = document.getElementById('myCanvas');
+      let ctx = myCanvasEL.getContext('2d'); // 指定渲染環境 2D
+
+      let html_img = document.getElementById('html_img');
+      let base64Img = document.getElementById('base64Img');
+
+      let imgSrcPath =
+        'https://images.pexels.com/photos/9009959/pexels-photo-9009959.jpeg?auto=compress&cs=tinysrgb&h=350&w=275';
+      html_img.src = imgSrcPath;
+
+      let canvasImg = new Image();
+      let imgConvertDataUrl;
+      canvasImg.src = imgSrcPath;
+      canvasImg.crossOrigin = 'anonymous';
+
+      // console.log('canvasImg', canvasImg);
+      canvasImg.onload = function () {
+        // console.log('canvasImg.onload', canvasImg, this);
+        // console.log('img.crossOrigin onload fun 內', canvasImg.crossOrigin);
+        myCanvasEL.width = this.width;
+        myCanvasEL.height = this.height;
+        ctx.drawImage(this, 0, 0);
+        dataURL = myCanvasEL.toDataURL();
+        imgConvertDataUrl = dataURL;
+        console.log('dataURL', dataURL);
+        base64Img.src = dataURL;
+      };
+
+      /* 動態產生 a 連結觸發 .click 事件下載檔案
+        * 
+      */
+      let btn_downBase64Img = document.getElementById('btn_downBase64Img');
+      btn_downBase64Img.onclick = function () {
+        // data:image/png;base64, xxx... 分割 base64 圖片的字串 '/' 與 ';'，取得圖檔格式 png 列為副檔名。
+        let imgType = dataURL.split('/', 2)[1].split(';',2)[0];
+        
+        let link = document.createElement('a');
+        link.href = imgConvertDataUrl;
+        link.id = 'downloadImg_link';
+        link.download = `canvas 轉 base64 圖片--${new Date().getTime()}.${imgType}`;
+        
+        document.body.appendChild(link);
+        let downloadImg_linkEL = document.getElementById('downloadImg_link');
+        downloadImg_linkEL.click(); // 動態建立的 a 連結執行點按行為
+        downloadImg_linkEL.remove(); // 觸發 .click 行為後，立即移除動態建立的 a 連結
+      };
+    </script>
+  </body>
+</html>

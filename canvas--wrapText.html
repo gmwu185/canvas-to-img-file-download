@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>canvas 繪製文字以 JavaScript 原型方式，自訂加入自動換行方法</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas">您的瀏覽器不支援 canvas 標籤，請您更換瀏覽器！！</canvas>
+
+    <script>
+      /** 文字自動換行參考一：
+       * 我正在使用JavaScript的原型功能，以便您可以從畫布上下文中調用該函數。 (17L)
+       * http://hk.uwenku.com/question/p-sdmzzlfh-et.html
+       */
+      CanvasRenderingContext2D.prototype.wrapText = function (text, x, y, maxWidth, lineHeight) {
+        /**
+         * @param text 文字字串、數值
+         * @param x 寬
+         * @param y 高
+         * @param maxWidth 最大寬
+         * @param lineHeight 行距
+         */
+        var lines = text.split('\n');
+
+        for (var i = 0; i < lines.length; i++) {
+          var words = lines[i].split(' ');
+          var line = '';
+
+          for (var n = 0; n < words.length; n++) {
+            var testLine = line + words[n] + ' ';
+            var metrics = this.measureText(testLine);
+            var testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+              this.fillText(line, x, y);
+              line = words[n] + ' ';
+              y += lineHeight;
+            } else {
+              line = testLine;
+            }
+          }
+
+          this.fillText(line, x, y);
+          y += lineHeight;
+        }
+      };
+
+      let myCanvas = document.getElementById('myCanvas');
+      let ctx = myCanvas.getContext('2d'); // 指定渲染環境 2D
+
+      myCanvas.width = 600;
+      myCanvas.height = 600;
+      ctx.fillStyle = 'rgb(120, 120, 120)';
+      ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+
+      /** 文字換行一：使用特殊字元 \n 將文字換行
+       * 字串裡的特殊字元 \n 換行 (https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Guide/Grammar_and_types#字串裡的特殊字元)
+       * 預設繪製文字齊左
+       * 文字基線使用對文字上方
+       */
+      ctx.textBaseline = 'top'; // 基線使用上方
+      ctx.font = '30px sans-serif'; // 設定文字字型與大小
+      ctx.fillStyle = '#ffd823'; // 設定文字填滿顏色
+      ctx.strokeStyle = '#D50A17'; // 設定文字邊框
+      let textBorder = 10; // 文字換行邊界
+      ctx.wrapText('今天是\n星期一 \n星期一', 10, textBorder * 2, myCanvas.width - textBorder, 35);
+
+      /** 文字換行二：
+       * 繪製文字齊中
+       * 印出字串中多地方使用空白字串 ' ' 讓繪製文字進行自動換行
+       * \n 強制於 '，' 之後換行
+       */
+      ctx.textAlign = 'center';
+      ctx.font = '35px ' + 'Noto Serif SC'; // 設定文字字型 大小
+      ctx.fillStyle = '#00ff64'; // 設定文字填滿顏色
+      ctx.wrapText(
+        'aAbBcCdDeE 字串，透過 JS 原型方式， 加入wrapText方法，達到自動換行的排版方式，\n 這裡是使用 JS 特殊字元的換行方式進行換行',
+        myCanvas.width / 2,
+        170,
+        myCanvas.width - 70,
+        45
+      );
+    </script>
+  </body>
+</html>

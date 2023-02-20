@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    
+    <!-- <canvas class="js-class-el"></canvas> -->
+    <!-- <canvas id="myCanvas"></canvas> -->
+
+    <!-- <img id="crossorigin-img-use-" src="https://media.prod.mdn.mozit.cloud/attachments/2013/06/22/5397/7a3ec0cae64a95ad454ac3bc2c71c004/rhino.jpg"> -->
+    
+<img id="cros_img" src="https://media.prod.mdn.mozit.cloud/attachments/2013/06/22/5397/7a3ec0cae64a95ad454ac3bc2c71c004/rhino.jpg">
+<canvas id="myCanvasEL_use_crossorigin"></canvas>
+
+<script>
+  /** 資料來源
+   * https://www.zhangxinxu.com/wordpress/2018/02/crossorigin-canvas-getimagedata-cors/
+   */
+
+  /* 圖片 -> 置入 canvas -> canvas 轉圖 --------------------------------------------- */
+  // var myCanvasEL = document.getElementById('myCanvas');
+  // var context = myCanvasEL.getContext('2d');
+  // var img = new Image();
+  // var dataURL;  // 由 canvas 轉出的圖片實體
+ 
+
+  // // img.crossOrigin = 'anonymous';
+  // // img.crossOrigin = '';  // HTML crossOrigin 屬性解決資源跨域問題，屬性值空字串會自動轉 "anonymous"
+  // console.log('img.crossOrigin onload 之前', img.crossOrigin);
+  // img.src = 'https://media.prod.mdn.mozit.cloud/attachments/2013/06/22/5397/7a3ec0cae64a95ad454ac3bc2c71c004/rhino.jpg';
+  // img.onload = function () {
+  //   console.log('img.crossOrigin onload fun 內', img.crossOrigin);
+
+  //   myCanvasEL.width = this.width;
+  //   myCanvasEL.height = this.height;
+
+  //   context.drawImage(img, 0, 0); // 將 img 實體使用 canvas 繪畫時不會有錯可執行，此時只是將圖片繪於畫布上
+
+  //   /** 當使用到 canvas 的相關圖片操作方法 .getImageData() & .toDataURL() 時
+  //    * img crossOrigin 屬性為 null 時 就會出現錯誤提示 The operation is insecure.
+  //    * 需在 .onload 產生圖片實體前，先指定圖片屬性 img.crossOrigin = 'anonymous' 就不會在出現錯誤中斷的提示
+  //   */
+  //   // context.getImageData(0, 0, this.width, this.height);
+  //   // dataURL = myCanvasEL.toDataURL();
+  // };
+  /* 圖片 -> 置入 canvas -> canvas 轉圖 --------------------------------------------- */
+
+  // var img = new Image();
+  // console.log('img.crossOrigin onload fun 內', img.crossOrigin);
+  // img.onload = function () {
+  //   img.src =
+  //     'https://media.prod.mdn.mozit.cloud/attachments/2013/06/22/5397/7a3ec0cae64a95ad454ac3bc2c71c004/rhino.jpg';
+  //   console.log('img.crossOrigin onload fun 內', img.crossOrigin);
+  // };
+
+  var myCanvasEL_use_crossorigin = document.getElementById('myCanvasEL_use_crossorigin');
+  var imgEL = document.getElementById('cros_img');
+  var context = myCanvasEL_use_crossorigin.getContext('2d');
+  var dataURL;
+  imgEL.crossOrigin = 'anonymous';
+
+  imgEL.onload = function() {
+    myCanvasEL_use_crossorigin.width = imgEL.width;
+    myCanvasEL_use_crossorigin.height = imgEL.height;
+    context.drawImage(imgEL, 0, 0)
+
+    dataURL = myCanvasEL_use_crossorigin.toDataURL();
+    console.log('dataURL', dataURL);
+  }
+
+</script>
+  </body>
+</html>
